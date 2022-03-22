@@ -1,3 +1,5 @@
+//import { createElement } from "react";
+
 /*
   В функцию appendToBody передаются 3 параметра:
   tag - имя тега, content - содержимое тега и count - количество вставок.
@@ -5,6 +7,11 @@
   Считаем, что всегда передается тег, допускающий вставку текста в качестве своего содержимого (P, DIV, I и пр.).
 */
 export function appendToBody(tag, content, count) {
+    for (let i = 0; i < count; i++) {
+        let element = document.createElement('' + tag);
+        element.textContent = content;
+        document.getElementsByTagName('body')[0].appendChild(element);
+    }
 }
 
 /*
@@ -15,8 +22,24 @@ export function appendToBody(tag, content, count) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function generateTree(childrenCount, level) {
-}
+    function chil(div, count, level, max) {
+        for (let i = 0; i < count; i++) {
+            let newdiv = document.createElement('div');
+            newdiv.classList.add('item_' + level);
+            if (level != max) {
+                div.appendChild(chil(newdiv, count, level + 1, max));
+            } else {
+                div.appendChild(newdiv);
+            }
+        }
+        return div;
+    }
 
+    let newdiv = document.createElement('div');
+    newdiv.classList.add('item_' + 1);
+
+    return chil(newdiv, childrenCount, 2, level);
+}
 /*
   Используйте функцию для создания дерева тегов DIV из предыдущего задания.
   Создайте дерево с вложенностью 3 и числом элементов в каждом узле 2.
@@ -26,4 +49,16 @@ export function generateTree(childrenCount, level) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function replaceNodes() {
+    let div = document.createElement('div');
+    div = generateTree(2, 3);
+    for (let i of div.children) {
+        let section = document.createElement('section');
+        section.classList.add(i.className);
+        let child = i.children;
+        while (child.length > 0) {
+            section.appendChild(child[0]);
+        }
+        div.replaceChild(section, i);
+    }
+    return div;
 }
